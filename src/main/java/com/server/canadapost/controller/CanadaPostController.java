@@ -27,7 +27,6 @@ import jakarta.validation.constraints.NotBlank;
 @RequestMapping("/api/delivery/canadapost")
 @Validated
 public class CanadaPostController {
-  
   // @Autowired
   // private CanadaPostService canadaPostService;
 
@@ -36,7 +35,7 @@ public class CanadaPostController {
     // ResponseEntity<Object> response = canadaPostService.pickupAvailability(postalCode);
 
     // return response;
-    return null;
+    return null;    
   }
 
   @PostMapping("/ship/price")

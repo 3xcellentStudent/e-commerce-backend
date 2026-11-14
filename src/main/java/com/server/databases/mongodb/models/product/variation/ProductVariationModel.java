@@ -35,6 +35,7 @@ public class ProductVariationModel {
   private @NotBlank String variationName;
   private VariationOptions variationOptions;
   private List<Image> image;
+  private List<Descriptions> descriptions;
   private @CreatedDate Instant createdAt;
   private @LastModifiedDate Instant updatedAt;
 

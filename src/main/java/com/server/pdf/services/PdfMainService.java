@@ -32,50 +32,46 @@ public class PdfMainService {
 
   private final Logger logger = LoggerFactory.getLogger(PdfMainService.class);
 
-  @Autowired
-  private ObjectMapper objectMapper;
-
   public ResponseEntity<Object> create(CreatePdfDocumentDto dto){
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-    // try(Document document = new Document();){
-      Document document = new Document();
-      // logger.info(String.format("Creating the PDF document with ID %s...", dto.invoiceId));
-      final PdfWriter instance = PdfWriter.getInstance(document, outputStream);
+    Document document = new Document();
+    // logger.info(String.format("Creating the PDF document with ID %s...", dto.invoiceId));
+    final PdfWriter instance = PdfWriter.getInstance(document, outputStream);
 
-      metadata(instance);
+    metadata(instance);
 
-      document.open();
-      document.newPage();
+    document.open();
+    document.newPage();
 
-      instance.setPageEmpty(false);
+    instance.setPageEmpty(false);
 
-      mainInfoTable(dto, document);
-      
-      billToInfoTable(dto, document);
+    mainInfoTable(dto, document);
+    
+    billToInfoTable(dto, document);
 
-      descriptionFieldsTable(dto, document);
+    descriptionFieldsTable(dto, document);
 
-      document.close();
+    document.close();
 
-      // Files.write(Path.of(String.format("/home/andrew/Desktop/newfile-%d.pdf", System.currentTimeMillis())), outputStream.toByteArray());
-      // logger.info(String.format("The PDF document with ID %s successfuly created !", dto.invoiceId));
+    // Files.write(Path.of(String.format("/home/andrew/Desktop/newfile-%d.pdf", System.currentTimeMillis())), outputStream.toByteArray());
+    // logger.info(String.format("The PDF document with ID %s successfuly created !", dto.invoiceId));
 
-      String fileName = String.format("newfile-%d.pdf", System.currentTimeMillis());
+    String fileName = String.format("newfile-%d.pdf", System.currentTimeMillis());
 
-      Map<String, Object> responseBodyMap = new HashMap<>();
-      responseBodyMap.put("fileName", fileName);
-      responseBodyMap.put("fileBytes", outputStream.toByteArray());
-      responseBodyMap.put("emailContent", dto);
+    Map<String, Object> responseBodyMap = new HashMap<>();
+    responseBodyMap.put("fileName", fileName);
+    responseBodyMap.put("fileBytes", outputStream.toByteArray());
+    responseBodyMap.put("emailContent", dto);
 
-      // String responseBodyString = objectMapper.writeValueAsString(responseBodyMap);
+    // String responseBodyString = objectMapper.writeValueAsString(responseBodyMap);
 
-      return ResponseEntity.ok()
-      .header("Content-Type", "application/json")
-      .body(responseBodyMap);
-    // } catch(IOException error){
-    //   logger.error("An error occurred during creating document !", error);
-    //   return ResponseEntity.internalServerError().body(error.getMessage());
-    // }
+    return ResponseEntity.ok()
+    .header("Content-Type", "application/json")
+    .body(responseBodyMap);
+  // } catch(IOException error){
+  //   logger.error("An error occurred during creating document !", error);
+  //   return ResponseEntity.internalServerError().body(error.getMessage());
+  // }
   }
   
   private void metadata(final PdfWriter instance){

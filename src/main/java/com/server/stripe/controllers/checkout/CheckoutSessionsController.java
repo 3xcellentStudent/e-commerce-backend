@@ -41,9 +41,9 @@ public class CheckoutSessionsController {
 
   @PostMapping("/webhook/completed")
   public ResponseEntity<Object> getWebhook(@Valid @RequestBody StripeCheckoutEventDto body){
-    StripeCheckoutCompletedDto sessionModel = body.data().object();
+    StripeCheckoutCompletedDto data = body.data().object();
     OrdersFindOneAndModifyDto updateDto = new OrdersFindOneAndModifyDto(
-      sessionModel.id(), sessionModel.invoice(), sessionModel.status(), OrdersProcessingType.CREATED.name()
+      data.id(), data.invoice(), data.status(), OrdersProcessingType.CREATED.name()
     );
 
     OrderModel updatedDoc = ordersService.updateOneById(updateDto, OrderStatusTypes.OPEN.name());

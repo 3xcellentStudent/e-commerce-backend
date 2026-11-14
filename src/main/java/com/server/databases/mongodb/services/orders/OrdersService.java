@@ -34,7 +34,10 @@ public class OrdersService {
   }
 
   public OrderModel updateOneById(OrdersFindOneAndModifyDto body, String status){
-    Criteria criteria = Criteria.where("checkoutId").is(body.checkoutId()).and("status").is(OrdersStatusesType.valueOf(status.toUpperCase()).name());
+    Criteria criteria = Criteria
+    .where("checkoutId").is(body.checkoutId())
+    .and("status").is(OrdersStatusesType.valueOf(status.toUpperCase()).name());
+    
     Query query = Query.query(criteria);
 
     Update update = new Update();
