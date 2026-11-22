@@ -12,6 +12,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.server.databases.mongodb.dto.product.variation.CreateVariationByParentId;
+// import com.server.databases.mongodb.models.product.variation.ProductVariationModel.Options;;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -32,10 +33,10 @@ public class ProductVariationModel {
   private @Id String id;
   private @Indexed @NotBlank String parentId;
   private @Valid  StockInfo stockInfo;
-  private @NotBlank String variationName;
-  private VariationOptions variationOptions;
-  private List<Image> image;
-  private List<Descriptions> descriptions;
+  private @NotBlank String productName;
+  private Options options;
+  private Image image;
+  private List<Description> descriptions;
   private @CreatedDate Instant createdAt;
   private @LastModifiedDate Instant updatedAt;
 
@@ -43,15 +44,16 @@ public class ProductVariationModel {
   @NoArgsConstructor
   @AllArgsConstructor
   public static class Image {
-    private String media;
-    private String src;
-    private String srcset;
+    private String media = "";
+    private String src = "";
+    private String srcset = "";
+    private String alt = "";
   }
 
   @Data
   @NoArgsConstructor
   @AllArgsConstructor
-  public static class Descriptions {
+  public static class Description {
     private String summary;
     private List<String> presentable;
   }
@@ -70,18 +72,19 @@ public class ProductVariationModel {
   @Data
   @NoArgsConstructor
   @AllArgsConstructor
-  public static class VariationOptions {
-    private String name = "";
-    private String type = "";
+  public static class Options {
+    private String attribute = "";
+    private String unit = "";
     private String value = "";
   }
 
   public ProductVariationModel(CreateVariationByParentId body){
     this.parentId = body.parentId();
     this.stockInfo = body.stockInfo() != null ? body.stockInfo() : new StockInfo();
-    this.variationOptions = new VariationOptions();
-    this.variationName = body.variationName();
-    this.image = new ArrayList<Image>();
+    this.options = body.options() != null ? body.options() : new Options();
+    this.productName = body.productName();
+    this.image = body.image() != null ? body.image() : new Image();
+    this.descriptions = body.descriptions() != null ? body.descriptions() : new ArrayList<>();
     this.createdAt = Instant.now();
     this.updatedAt = Instant.now();
   }

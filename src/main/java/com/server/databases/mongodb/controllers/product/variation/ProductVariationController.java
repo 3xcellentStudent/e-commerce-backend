@@ -83,7 +83,8 @@ public class ProductVariationController {
 
   @GetMapping("/get/id")
   public ResponseEntity<Object> getManyById(@RequestParam @NotEmpty List<String> ids){
-    List<ProductVariationModel> variations = mainService.findManyById("id", ids, ProductVariationModel.class, variationCollection);
+    List<ProductVariationModel> variations = mainService.findManyById("_id", ids, ProductVariationModel.class, variationCollection);
+    
     return ResponseEntity.ok(variations);
   }
 
