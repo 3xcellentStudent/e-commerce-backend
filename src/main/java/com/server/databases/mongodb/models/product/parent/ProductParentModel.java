@@ -15,7 +15,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.server.databases.mongodb.dto.product.CreateNewProductDto;
 import com.server.databases.mongodb.models.product.variation.ProductVariationModel;
-import com.server.databases.mongodb.models.reviews.components.ReviewsSnapshot;
+// import com.server.databases.mongodb.models.reviews.components.ReviewsSnapshot;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -42,7 +42,7 @@ public class ProductParentModel {
   private @Builder.Default List<ProductVariationModel> variations = List.of();
   private @NotEmpty Specifications specifications;
   private List<MediaContent> mediaContent;
-  private ReviewsSnapshot reviewsSnapshot;
+  // private ReviewsSnapshot reviewsSnapshot;
   private @Indexed @NotBlank String category;
   private @CreatedDate Instant createdAt;
   private @LastModifiedDate Instant updatedAt;
@@ -95,16 +95,16 @@ public class ProductParentModel {
     }
   }
 
-  public int getReviewsSnapshotByFieldName(String field){
-    switch(field){
-      case "five": return this.reviewsSnapshot.five;
-      case "four": return this.reviewsSnapshot.four;
-      case "three": return this.reviewsSnapshot.three;
-      case "two": return this.reviewsSnapshot.two;
-      case "one": return this.reviewsSnapshot.one;
-      default: return this.reviewsSnapshot.five;
-    }
-  }
+  // public int getReviewsSnapshotByFieldName(String field){
+  //   switch(field){
+  //     case "five": return this.reviewsSnapshot.five;
+  //     case "four": return this.reviewsSnapshot.four;
+  //     case "three": return this.reviewsSnapshot.three;
+  //     case "two": return this.reviewsSnapshot.two;
+  //     case "one": return this.reviewsSnapshot.one;
+  //     default: return this.reviewsSnapshot.five;
+  //   }
+  // }
 
   public ProductParentModel(CreateNewProductDto data){
     this.rating = 0;
@@ -114,7 +114,7 @@ public class ProductParentModel {
     this.specifications = data.specifications();
     this.mediaContent = data.mediaContent();
     this.category = data.category();
-    this.reviewsSnapshot = new ReviewsSnapshot();
+    // this.reviewsSnapshot = new ReviewsSnapshot();
   }
 
 }

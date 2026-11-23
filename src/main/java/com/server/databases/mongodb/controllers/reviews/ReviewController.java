@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.server.databases.mongodb.controllers.product.parent.ProductParentController;
 import com.server.databases.mongodb.dto.main.UpdateOneByIdDto;
 import com.server.databases.mongodb.models.product.parent.ProductParentModel;
 import com.server.databases.mongodb.models.reviews.ReviewsModel;
@@ -57,10 +58,14 @@ public class ReviewController {
   private MongoDbMainService mainService;
   @Autowired
   private MongoTemplate mongoTemplate;
+  @Autowired 
+  private  ProductParentController productParentController;
 
   @PostMapping("/create")
   public ResponseEntity<Object> create(@Valid @RequestBody ReviewsModel body){
     ReviewsModel insertedDoc = reviewsService.createOne(body);
+
+    productParentController.updateOneById(new UpdateOneByIdDto(body.getParentId(), "rating", ));
 
     return ResponseEntity.ok(insertedDoc);
   }
