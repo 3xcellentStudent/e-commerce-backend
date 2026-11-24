@@ -17,6 +17,8 @@ import com.server.databases.mongodb.dto.product.CreateNewProductDto;
 import com.server.databases.mongodb.models.product.variation.ProductVariationModel;
 // import com.server.databases.mongodb.models.reviews.components.ReviewsSnapshot;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
@@ -36,38 +38,46 @@ import lombok.NoArgsConstructor;
 public class ProductParentModel {
 
   private @Id String id;
-  private Integer rating;
+  // private Integer rating;
   private @NotBlank @TextIndexed String productName;
   private @NotEmpty Descriptions descriptions;
   private @Builder.Default List<ProductVariationModel> variations = List.of();
   private @NotEmpty Specifications specifications;
   private List<MediaContent> mediaContent;
-  // private ReviewsSnapshot reviewsSnapshot;
+  private RatingSummary ratingSummary;
   private @Indexed @NotBlank String category;
   private @CreatedDate Instant createdAt;
   private @LastModifiedDate Instant updatedAt;
+
+  @Data 
+  @NoArgsConstructor 
+  @AllArgsConstructor
+  public static class RatingSummary {
+    private @Min(0) @Max(5) Double averageRating;
+    private @Min(0) Long totalCount;
+  }
 
   @Data
   @NoArgsConstructor
   @AllArgsConstructor
   public static class Descriptions {
-    public @NotBlank String summary;
-    public @NotEmpty List<String> presentable;
+    private @NotBlank String summary;
+    private @NotEmpty List<String> presentable;
   }
 
   @Data
   @NoArgsConstructor
   @AllArgsConstructor
   public static class MediaContent {
-    public boolean isImage;
-    public ArrayList<MediaObject> mediaArray;
+    private boolean isImage;
+    private ArrayList<MediaObject> mediaArray;
 
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     public static class MediaObject {
-      public String media;
-      public String src;
+      private String media;
+      private String src;
     }
   }
 
@@ -75,46 +85,35 @@ public class ProductParentModel {
   @NoArgsConstructor
   @AllArgsConstructor
   public static class Specifications {
-    public ArrayList<String> titles;
-    public ArrayList<Properties> properties;
+    private ArrayList<String> titles;
+    private ArrayList<Properties> properties;
 
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Properties {
-      public String name;
-      public ArrayList<PropertiesArrayObject> array;
+      private String name;
+      private ArrayList<PropertiesArrayObject> array;
     }
 
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     public static class PropertiesArrayObject {
-      public String name;
-      public String value;
+      private String name;
+      private String value;
     }
   }
 
-  // public int getReviewsSnapshotByFieldName(String field){
-  //   switch(field){
-  //     case "five": return this.reviewsSnapshot.five;
-  //     case "four": return this.reviewsSnapshot.four;
-  //     case "three": return this.reviewsSnapshot.three;
-  //     case "two": return this.reviewsSnapshot.two;
-  //     case "one": return this.reviewsSnapshot.one;
-  //     default: return this.reviewsSnapshot.five;
-  //   }
-  // }
-
   public ProductParentModel(CreateNewProductDto data){
-    this.rating = 0;
+    // this.rating = 0;
     this.productName = data.productName();
     this.descriptions = data.descriptions();
     this.variations =  List.of();
     this.specifications = data.specifications();
     this.mediaContent = data.mediaContent();
     this.category = data.category();
-    // this.reviewsSnapshot = new ReviewsSnapshot();
+    this.ratingSummary = data.ratingSummary();
   }
 
 }

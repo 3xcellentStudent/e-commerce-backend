@@ -22,11 +22,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.server.databases.mongodb.controllers.product.parent.ProductParentController;
 import com.server.databases.mongodb.dto.main.UpdateOneByIdDto;
 import com.server.databases.mongodb.models.product.parent.ProductParentModel;
+import com.server.databases.mongodb.models.product.parent.ProductParentModel.RatingSummary;
 import com.server.databases.mongodb.models.reviews.ReviewsModel;
 import com.server.databases.mongodb.services.MongoDbMainService;
+import com.server.databases.mongodb.services.product.parent.ProductParentService;
 import com.server.databases.mongodb.services.reviews.ReviewsService;
 
 import jakarta.validation.Valid;
@@ -49,23 +50,23 @@ public class ReviewController {
 
   @Value("${databases.mongodb.collections.reviews}")
   private String reviewsCollection;
-    @Value("${databases.mongodb.collections.products.main}")
-  private String productCollection;
+  @Value("${databases.mongodb.collections.products.main}")
+  private String parentProductCollection;
 
+  @Autowired 
+  private ProductParentService productParentService;
   @Autowired
   private ReviewsService reviewsService;
   @Autowired
   private MongoDbMainService mainService;
   @Autowired
   private MongoTemplate mongoTemplate;
-  @Autowired 
-  private  ProductParentController productParentController;
 
   @PostMapping("/create")
   public ResponseEntity<Object> create(@Valid @RequestBody ReviewsModel body){
     ReviewsModel insertedDoc = reviewsService.createOne(body);
 
-    productParentController.updateOneById(new UpdateOneByIdDto(body.getParentId(), "rating", ));
+    productParentService.updateRatingSummaryByParentId(body.getParentId());
 
     return ResponseEntity.ok(insertedDoc);
   }
@@ -73,6 +74,8 @@ public class ReviewController {
   @PatchMapping("/update/id")
   public ResponseEntity<Object> updateOneById(@Valid @RequestBody UpdateOneByIdDto body){
     ReviewsModel mofidiedDoc = mainService.updateOneById(body, ReviewsModel.class, reviewsCollection);
+
+    productParentService.updateRatingSummaryByParentId(mofidiedDoc.getParentId());
 
     if(mofidiedDoc == null){
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Document with ID \" " + body.id() + " \" was not found !");
@@ -105,7 +108,7 @@ public class ReviewController {
   @GetMapping("/get/parent-id")
   public ResponseEntity<Object> findManyByParentId(@RequestParam @NotBlank String parentId){
     Query query = Query.query(Criteria.where("_id").is(parentId));
-    boolean isExists = mongoTemplate.exists(query, ProductParentModel.class, productCollection);
+    boolean isExists = mongoTemplate.exists(query, ProductParentModel.class, parentProductCollection);
     if(!isExists){
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Document with ID \"" + parentId + "\" does not exist !");
     }

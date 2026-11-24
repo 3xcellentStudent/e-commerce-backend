@@ -138,6 +138,11 @@ public class GlobalControllersExceptionHandler {
   public ResponseEntity<?> handleResourceNotFoundException(ResourceNotFoundException ex){
     return buildResponse(HttpStatus.NOT_FOUND, "resource not found.", ex, null);
   }
+
+  @ExceptionHandler(NullPointerException.class)
+  public ResponseEntity<?> handleNullPointer(NullPointerException ex){
+    return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), ex, null);
+  }
     
   // =========================================================================
   // 6. FINAL BACKUP CATCH (Catch-All)

@@ -10,15 +10,19 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import com.server.databases.mongodb.dto.main.UpdateOneByIdDto;
 import com.server.databases.mongodb.dto.product.CreateNewProductDto;
 import com.server.databases.mongodb.models.product.parent.ProductParentModel;
+import com.server.databases.mongodb.models.product.parent.ProductParentModel.RatingSummary;
 import com.server.databases.mongodb.models.product.variation.ProductVariationModel;
+import com.server.databases.mongodb.services.MongoDbMainService;
+import com.server.databases.mongodb.services.reviews.ReviewsService;
 
 @Service
 public class ProductParentService {
 
   @Value("${databases.mongodb.collections.products.main}")
-  private String productCollection;
+  private String currentCollection;
   @Value("${databases.mongodb.collections.products.variations}")
   private String variationCollection;
   @Value("${databases.mongodb.collections.media}")
@@ -28,13 +32,17 @@ public class ProductParentService {
 
   @Autowired
   private MongoTemplate mongoTemplate;
+  @Autowired
+  private ReviewsService reviewsService;
+  @Autowired
+  private MongoDbMainService mainService;
 
   public ProductParentModel createOne(CreateNewProductDto body){
     ProductParentModel dto = new ProductParentModel(body);
 
     dto.setMediaContent(body.mediaContent());
 
-    ProductParentModel insertedDocument = mongoTemplate.insert(dto, productCollection);
+    ProductParentModel insertedDocument = mongoTemplate.insert(dto, currentCollection);
     
     return insertedDocument;
   }
@@ -42,7 +50,7 @@ public class ProductParentService {
   public List<ProductParentModel> findManyCascadeById(List<String> id){
     Query query = Query.query(Criteria.where("_id").in(id));
 
-    List<ProductParentModel> docsList = mongoTemplate.find(query, ProductParentModel.class, productCollection);
+    List<ProductParentModel> docsList = mongoTemplate.find(query, ProductParentModel.class, currentCollection);
     
     List<ProductParentModel> filteredDocsList = docsList.stream()
     .map(entity -> addEntitiesToOneProductObject(entity)).filter(Objects::nonNull).toList();
@@ -59,7 +67,7 @@ public class ProductParentService {
   //   .findAllAndRemove(Query.query(Criteria.where("parentId").in(ids)), ProductVariationModel.class, variationCollection);
 
   //   List<ProductParentModel> deletedProducts = mongoTemplate
-  //   .findAllAndRemove(Query.query(Criteria.where("_id").in(ids)), ProductParentModel.class, productCollection);
+  //   .findAllAndRemove(Query.query(Criteria.where("_id").in(ids)), ProductParentModel.class, currentCollection);
 
   //   Map<String, Object> responseBody = new HashMap<>();
   //   responseBody.put("products", deletedProducts);
@@ -77,6 +85,17 @@ public class ProductParentService {
 
     product.setVariations(variationEntities);
     return product;
+  }
+
+  public  ProductParentModel updateRatingSummaryByParentId(String parentId){
+    RatingSummary newRatingSummary = reviewsService.getAverageRatingByParentId(parentId);
+
+    UpdateOneByIdDto updateOneByIdDto = new UpdateOneByIdDto(parentId, "ratingSummary", newRatingSummary);
+
+    ProductParentModel modifiedDoc = mainService
+    .updateOneById(updateOneByIdDto, ProductParentModel.class, currentCollection);
+
+    return modifiedDoc;
   }
 
 }

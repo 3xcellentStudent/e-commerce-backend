@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.server.databases.mongodb.models.product.parent.ProductParentModel.Descriptions;
 import com.server.databases.mongodb.models.product.parent.ProductParentModel.MediaContent;
+import com.server.databases.mongodb.models.product.parent.ProductParentModel.RatingSummary;
 import com.server.databases.mongodb.models.product.parent.ProductParentModel.Specifications;
 
 import jakarta.validation.constraints.NotBlank;
@@ -13,5 +14,6 @@ public record CreateNewProductDto(
   Descriptions descriptions,
   Specifications specifications,
   List<MediaContent> mediaContent,
-  @NotBlank String category
+  @NotBlank String category,
+  RatingSummary ratingSummary
 ){}
