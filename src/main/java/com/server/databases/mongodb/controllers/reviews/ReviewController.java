@@ -73,14 +73,15 @@ public class ReviewController {
 
   @PatchMapping("/update/id")
   public ResponseEntity<Object> updateOneById(@Valid @RequestBody UpdateOneByIdDto body){
-    ReviewsModel mofidiedDoc = mainService.updateOneById(body, ReviewsModel.class, reviewsCollection);
+    ReviewsModel modifiedDoc = mainService.updateOneById(body, ReviewsModel.class, reviewsCollection);
 
-    productParentService.updateRatingSummaryByParentId(mofidiedDoc.getParentId());
-
-    if(mofidiedDoc == null){
+    if(modifiedDoc == null){
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Document with ID \" " + body.id() + " \" was not found !");
+    } else {
+      productParentService.updateRatingSummaryByParentId(modifiedDoc.getParentId());
+
+      return ResponseEntity.ok(modifiedDoc);
     }
-    return ResponseEntity.ok(mofidiedDoc);
   }
 
   @GetMapping("/get")

@@ -53,8 +53,8 @@ public class ProductParentModel {
   @NoArgsConstructor 
   @AllArgsConstructor
   public static class RatingSummary {
-    private @Min(0) @Max(5) Double averageRating;
-    private @Min(0) Long totalCount;
+    private @Min(0) @Max(5) Double averageRating = 0.0;
+    private @Min(0) Long totalCount = 0L;
   }
 
   @Data
@@ -106,14 +106,13 @@ public class ProductParentModel {
   }
 
   public ProductParentModel(CreateNewProductDto data){
-    // this.rating = 0;
     this.productName = data.productName();
     this.descriptions = data.descriptions();
     this.variations =  List.of();
     this.specifications = data.specifications();
     this.mediaContent = data.mediaContent();
     this.category = data.category();
-    this.ratingSummary = data.ratingSummary();
+    this.ratingSummary = new RatingSummary();
   }
 
 }

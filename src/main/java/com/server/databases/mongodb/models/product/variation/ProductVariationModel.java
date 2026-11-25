@@ -12,7 +12,6 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.server.databases.mongodb.dto.product.variation.CreateVariationByParentId;
-// import com.server.databases.mongodb.models.product.variation.ProductVariationModel.Options;;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -34,9 +33,9 @@ public class ProductVariationModel {
   private @Indexed @NotBlank String parentId;
   private @Valid  StockInfo stockInfo;
   private @NotBlank String productName;
-  private Options options;
+  private Option option;
   private Image image;
-  private List<Description> descriptions;
+  // private List<Description> descriptions;
   private @CreatedDate Instant createdAt;
   private @LastModifiedDate Instant updatedAt;
 
@@ -50,13 +49,13 @@ public class ProductVariationModel {
     private String alt = "";
   }
 
-  @Data
-  @NoArgsConstructor
-  @AllArgsConstructor
-  public static class Description {
-    private String summary;
-    private List<String> presentable;
-  }
+  // @Data
+  // @NoArgsConstructor
+  // @AllArgsConstructor
+  // public static class Description {
+  //   private String summary;
+  //   private List<String> presentable;
+  // }
 
   @Data
   @NoArgsConstructor
@@ -72,7 +71,7 @@ public class ProductVariationModel {
   @Data
   @NoArgsConstructor
   @AllArgsConstructor
-  public static class Options {
+  public static class Option {
     private String attribute = "";
     private String unit = "";
     private String value = "";
@@ -81,10 +80,10 @@ public class ProductVariationModel {
   public ProductVariationModel(CreateVariationByParentId body){
     this.parentId = body.parentId();
     this.stockInfo = body.stockInfo() != null ? body.stockInfo() : new StockInfo();
-    this.options = body.options() != null ? body.options() : new Options();
+    this.option = body.option() != null ? body.option() : new Option();
     this.productName = body.productName();
     this.image = body.image() != null ? body.image() : new Image();
-    this.descriptions = body.descriptions() != null ? body.descriptions() : new ArrayList<>();
+    // this.descriptions = body.descriptions() != null ? body.descriptions() : new ArrayList<>();
     this.createdAt = Instant.now();
     this.updatedAt = Instant.now();
   }
